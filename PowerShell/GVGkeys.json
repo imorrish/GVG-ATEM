@@ -1,0 +1,204 @@
+{
+    "Keys":[
+        {
+            "Value" : "Down,p",
+            "Key":1,
+            "Lamp":1,
+            "Command":"$me1.Preview=1"
+        },
+        {
+            "Value" : "Down,q",
+            "Key":2,
+            "Lamp":2,
+            "Command":"$me1.Preview=2"
+        },
+        {
+            "Value" : "Down,r",
+            "Key":3,
+            "Lamp":3,
+            "Command":"$me1.Preview=3"
+        },
+        {
+            "Value" : "Down,s",
+            "Key":4,
+            "Lamp":4,
+            "Command":"$me1.Preview=4"
+        },
+        {
+            "Value" : "Down,t",
+            "Key":5,
+            "Lamp":5,
+            "Command":"$me1.Preview=5"
+        },
+        {
+            "Value" : "Down,u",
+            "Key":6,
+            "Lamp":6,
+            "Command":"$me1.Preview=6"
+        },
+        {
+            "Value" : "Down,v",
+            "Key":7,
+            "Lamp":7,
+            "Command":"$me1.Preview=7"
+        },
+        {
+            "Value" : "Down,w",
+            "Key":8,
+            "Lamp":8,
+            "Command":"$me1.Preview=8"
+        },
+        {
+            "Value" : "Down,C",
+            "Key":9,
+            "Lamp":9,
+            "Command":"$me1.Preview=1"
+        },
+        {
+            "Value" : "Down,D",
+            "Key":10,
+            "Lamp":10,
+            "Command":"$me1.Preview=0"
+        },
+        {
+            "Value" : "Down,h",
+            "Key":11,
+            "Lamp":17,
+            "Command":"$me1.Program=1"
+        },
+        {
+            "Value" : "Down,i",
+            "Key":12,
+            "Lamp":18,
+            "Command":"$me1.Program=2"
+        },
+        {
+            "Value" : "Down,j",
+            "Key":13,
+            "Lamp":19,
+            "Command":"$me1.Program=3"
+        },
+        {
+            "Value" : "Down,k",
+            "Key":14,
+            "Lamp":20,
+            "Command":"$me1.Program=4"
+        },
+        {
+            "Value" : "Down,l",
+            "Key":15,
+            "Lamp":21,
+            "Command":"$me1.Program=5"
+        },
+        {
+            "Value" : "Down,m",
+            "Key":16,
+            "Lamp":22,
+            "Command":"$me1.Program=6"
+        },
+        {
+            "Value" : "Down,n",
+            "Key":17,
+            "Lamp":23,
+            "Command":"$me1.Program=7"
+        },
+        {
+            "Value" : "Down,o",
+            "Key":18,
+            "Lamp":24,
+            "Command":"$me1.Program=8"
+        },
+        {
+            "Value" : "Down,x",
+            "Key":19,
+            "Lamp":25,
+            "Command":"$me1.Program=1"
+        },
+        {
+            "Value" : "Down,y",
+            "Key":20,
+            "Lamp":26,
+            "Command":"$me1.Program=0"
+        },
+        {
+            "Value" : "Down,E",
+            "Key":21,
+            "Lamp":15,
+            "Command":"$me1.Cut()"
+        },
+        {
+            "Value" : "Down,F",
+            "Key":22,
+            "Lamp":16,
+            "Command":"$me1.AutoTransition()"
+        },
+        {
+            "Value" : "Down,9",
+            "Key":23,
+            "Lamp":31,
+            "Command":"buskey 1"
+        },
+        {
+            "Value" : "Down,a",
+            "Key":24,
+            "Lamp":32,
+            "Command":"buskey 2"
+        },
+        {
+            "Value" : "Down,b",
+            "Key":25,
+            "Lamp":33,
+            "Command":"buskey 3"
+        },
+        {
+            "Value" : "Down,c",
+            "Key":26,
+            "Lamp":32,
+            "Command":"buskey 4"
+        },
+        {
+            "Value" : "Down,d",
+            "Key":27,
+            "Lamp":32,
+            "Command":"buskey 5"
+        },
+        {
+            "Value" : "Down,e",
+            "Key":28,
+            "Lamp":32,
+            "Command":"buskey 6"
+        },
+        {
+            "Value" : "Down,f",
+            "Key":29,
+            "Lamp":32,
+            "Command":"buskey 7"
+        },
+        {
+            "Value" : "Down,g",
+            "Key":30,
+            "Lamp":32,
+            "Command":"buskey 8"
+        },
+        {
+            "Value" : "Down,A",
+            "Key":31,
+            "Lamp":32,
+            "Command":"buskey 9"
+        },
+        {
+            "Value" : "Down,B",
+            "Key":32,
+            "Lamp":32,
+            "Command":"buskey 10"
+        },
+        {
+            "Value" : "Down,U",
+            "Key":54,
+            "Lamp":40,
+            "Command":"if($activeme.FadeToBlackFullyBlack){$session.SendStringData('1,40')}else{$session.SendStringData('2,40')};$activeme.fadetoblack()"
+        }
+
+    ]
+
+}
