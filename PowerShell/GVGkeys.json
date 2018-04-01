@@ -7,16 +7,34 @@
             "Command":"$me1.Preview=1"
         },
         {
+            "Value" : "Hold,p",
+            "Key":1,
+            "Lamp":1,
+            "Command":"$me1.Preview=2001"
+        },
+        {
             "Value" : "Down,q",
             "Key":2,
             "Lamp":2,
             "Command":"$me1.Preview=2"
         },
         {
+            "Value" : "Hold,q",
+            "Key":2,
+            "Lamp":2,
+            "Command":"$me1.Preview=2002"
+        },
+        {
             "Value" : "Down,r",
             "Key":3,
             "Lamp":3,
             "Command":"$me1.Preview=3"
+        },
+        {
+            "Value" : "Hold,r",
+            "Key":3,
+            "Lamp":3,
+            "Command":"$me1.Preview=1000"
         },
         {
             "Value" : "Down,s",
@@ -52,7 +70,13 @@
             "Value" : "Down,C",
             "Key":9,
             "Lamp":9,
-            "Command":"$me1.Preview=1"
+            "Command":"$me1.Preview=3010;$Global:defailtMP=3010"
+        },
+        {
+            "Value" : "Hold,C",
+            "Key":9,
+            "Lamp":9,
+            "Command":"$me1.Preview=3020;$Global:defailtMP=3020"
         },
         {
             "Value" : "Down,D",
@@ -112,7 +136,7 @@
             "Value" : "Down,x",
             "Key":19,
             "Lamp":25,
-            "Command":"$me1.Program=1"
+            "Command":"$me1.Program=$Global:defailtMP"
         },
         {
             "Value" : "Down,y",
@@ -131,6 +155,30 @@
             "Key":22,
             "Lamp":16,
             "Command":"$me1.AutoTransition()"
+        },
+        {
+            "Value" : "Down,Q",
+            "Key":22,
+            "Lamp":16,
+            "Command":"$me1.TransitionStyle='Mix'"
+        },
+        {
+            "Value" : "Hold,Q",
+            "Key":22,
+            "Lamp":16,
+            "Command":"$me1.TransitionStyle='Dip'"
+        },
+        {
+            "Value" : "Down,R",
+            "Key":22,
+            "Lamp":16,
+            "Command":"$me1.TransitionStyle='Wipe'"
+        },
+        {
+            "Value" : "Hold,R",
+            "Key":22,
+            "Lamp":16,
+            "Command":"$me1.TransitionStyle='DVE'"
         },
         {
             "Value" : "Down,9",
@@ -197,8 +245,109 @@
             "Key":54,
             "Lamp":40,
             "Command":"if($activeme.FadeToBlackFullyBlack){$session.SendStringData('1,40')}else{$session.SendStringData('2,40')};$activeme.fadetoblack()"
+        },
+        {
+            "Value" : "Down,3",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$Global:activeUSK.Type = 'Luma'"
+        },
+        {
+            "Value" : "Down,4",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$Global:activeUSK.Type='Chroma'"
+        },
+        {
+            "Value" : "Down,5",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$Global:activeUSK.Type='Pattern'"
+        },
+        {
+            "Value" : "Hold,5",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('4,18');$session.SendStringData('3,66');$Global:PatternCtrlMode='USKPattern'"
+        },
+        {
+            "Value" : "Down,6",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$Global:activeUSK.Type='DVE'"
+        },
+        {
+            "Value" : "Down,*",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,70');PatternControl 1"
+        },
+        {
+            "Value" : "Down,(",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,69');PatternControl 2"
+        },
+        {
+            "Value" : "Down,^",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,65');PatternControl 3"
+        },
+        {
+            "Value" : "Down,%",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,79');PatternControl 4"
+        },
+        {
+            "Value" : "Down,$",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('75');PatternControl 5"
+        },
+        {
+            "Value" : "Down,[",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,68');PatternControl 6"
+        },
+        {
+            "Value" : "Down,]",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,71');PatternControl 7"
+        },
+        {
+            "Value" : "Down,/",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,67');PatternControl 8"
+        },
+        {
+            "Value" : "Down,?",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,78');PatternControl 9"
+        },
+        {
+            "Value" : "Down,>",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('2,77');PatternControl 10"
+        },
+        {
+            "Value" : "Hold,&",
+            "Key":32,
+            "Lamp":32,
+            "Command":"$session.SendStringData('4,66');$Global:PatternCtrlMode='BusKeyMode'"
+        },
+        {
+            "Value" : "Hold,+",
+            "Key":32,
+            "Lamp":76,
+            "Command":"ShiftModeToggle"
         }
-
     ]
 
 }
