@@ -4,10 +4,10 @@
 
 #define BITSB 8 
 #define TOLERANCE 10
-#define  Data0       23          //
-#define  Data1       25          //
-#define  Data2       27          //
-#define  Data3       29          //
+#define  Data0       23          //15
+#define  Data1       25          //16
+#define  Data2       27          //17
+#define  Data3       29          //19
 #define  Data4       31          //
 #define  Data5       33          //
 #define  Data6       35          //
@@ -66,7 +66,7 @@ byte BCD[16][4] ={{0,0,0,0},
 {0,1,1,1},
 {1,1,1,1}}; //BCD code
 
-int bussLEDs[] = {30,28,26,24,9,8,11,10,51,53};
+int bussLEDs[] =    {30,28,26,24,9,8,11,10,51,53};
 int previewLEDs[] = {38,36,34,32,1,3,5,7,6,4};
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
@@ -78,6 +78,13 @@ void keypadEvent(KeypadEvent key){
         action = "Down,";
         echoMsg = action+key;
         Firmata.sendString(echoMsg.c_str());
+        break;
+      }
+      case HOLD:{
+        action = "Hold,";
+        echoMsg = action+key;
+        Firmata.sendString(echoMsg.c_str());
+        break;
       }
     }
 }
@@ -461,7 +468,14 @@ void readAnalogValues()
         //if new value <> old value, send itto serial
         byte currentPotValue = AnalogIn(pot);
         int diff = abs(currentPotValue - AnalogPreviousValues[pot]);
-        if(diff > 1)
+        //need high res for t-bar so don't care about jitter
+        if((pot == 2) && (diff >0)) {
+          AnalogPreviousValues[pot]=currentPotValue;
+          String action = "Pot";
+          String echoMsg = action+pot+','+currentPotValue;
+          Firmata.sendString(echoMsg.c_str());
+        }
+        if((pot != 2) && (diff > 1))
         {
           AnalogPreviousValues[pot]=currentPotValue;
           String action = "Pot";
