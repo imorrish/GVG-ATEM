@@ -10,7 +10,7 @@ Credit to various posters in this ATEMUser forum for wiring and programming advi
 <http://www.atemuser.com/forums/atem-vision-mixers/developers/gvg-100-panel-control-atem-schematics-wanted>
 
 The GVG hardware is modified as per <http://www.lefflerpost.com.au/ATEM/gvg110%2520panel%2520mods.pdf>
-(making this solution pin for pin compatible with GVG2ATEM)
+(making this solution pin for pin compatible with GVG2ATEM if the code was updated to change pins to match DB25 to DB20 1to1 mapping (Pin1 on DB25 to Pin 20 on J2. I'll probably do this in a future release).
 
 The is just a hack, using the Arduino keypad library. Copy this modified keypad.cpp file over the top of the existing one.
 I should create a better one that uses pointer based array rather than characters for eack key. Need to learn more about libraries and creating my own.
