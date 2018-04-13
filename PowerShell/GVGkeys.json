@@ -4,181 +4,181 @@
             "Value" : "Down,p",
             "Key":1,
             "Lamp":1,
-            "Command":"$me1.Preview=1"
+            "Command":"$activeME.Preview=1"
         },
         {
             "Value" : "Hold,p",
             "Key":1,
             "Lamp":1,
-            "Command":"$me1.Preview=2001"
+            "Command":"$activeME.Preview=2001"
         },
         {
             "Value" : "Down,q",
             "Key":2,
             "Lamp":2,
-            "Command":"$me1.Preview=2"
+            "Command":"$activeME.Preview=2"
         },
         {
             "Value" : "Hold,q",
             "Key":2,
             "Lamp":2,
-            "Command":"$me1.Preview=2002"
+            "Command":"$activeME.Preview=2002"
         },
         {
             "Value" : "Down,r",
             "Key":3,
             "Lamp":3,
-            "Command":"$me1.Preview=3"
+            "Command":"$activeME.Preview=3"
         },
         {
             "Value" : "Hold,r",
             "Key":3,
             "Lamp":3,
-            "Command":"$me1.Preview=1000"
+            "Command":"$activeME.Preview=1000"
         },
         {
             "Value" : "Down,s",
             "Key":4,
             "Lamp":4,
-            "Command":"$me1.Preview=4"
+            "Command":"$activeME.Preview=4"
         },
         {
             "Value" : "Down,t",
             "Key":5,
             "Lamp":5,
-            "Command":"$me1.Preview=5"
+            "Command":"$activeME.Preview=5"
         },
         {
             "Value" : "Down,u",
             "Key":6,
             "Lamp":6,
-            "Command":"$me1.Preview=6"
+            "Command":"$activeME.Preview=6"
         },
         {
             "Value" : "Down,v",
             "Key":7,
             "Lamp":7,
-            "Command":"$me1.Preview=7"
+            "Command":"$activeME.Preview=7"
         },
         {
             "Value" : "Down,w",
             "Key":8,
             "Lamp":8,
-            "Command":"$me1.Preview=8"
+            "Command":"$activeME.Preview=8"
         },
         {
             "Value" : "Down,C",
             "Key":9,
             "Lamp":9,
-            "Command":"$me1.Preview=3010;$Global:defailtMP=3010"
+            "Command":"$activeME.Preview=3010;$Global:defailtMP=3010"
         },
         {
             "Value" : "Hold,C",
             "Key":9,
             "Lamp":9,
-            "Command":"$me1.Preview=3020;$Global:defailtMP=3020"
+            "Command":"$activeME.Preview=3020;$Global:defailtMP=3020"
         },
         {
             "Value" : "Down,D",
             "Key":10,
             "Lamp":10,
-            "Command":"$me1.Preview=0"
+            "Command":"$activeME.Preview=0"
         },
         {
             "Value" : "Down,h",
             "Key":11,
             "Lamp":17,
-            "Command":"$me1.Program=1"
+            "Command":"$activeME.Program=1"
         },
         {
             "Value" : "Down,i",
             "Key":12,
             "Lamp":18,
-            "Command":"$me1.Program=2"
+            "Command":"$activeME.Program=2"
         },
         {
             "Value" : "Down,j",
             "Key":13,
             "Lamp":19,
-            "Command":"$me1.Program=3"
+            "Command":"$activeME.Program=3"
         },
         {
             "Value" : "Down,k",
             "Key":14,
             "Lamp":20,
-            "Command":"$me1.Program=4"
+            "Command":"$activeME.Program=4"
         },
         {
             "Value" : "Down,l",
             "Key":15,
             "Lamp":21,
-            "Command":"$me1.Program=5"
+            "Command":"$activeME.Program=5"
         },
         {
             "Value" : "Down,m",
             "Key":16,
             "Lamp":22,
-            "Command":"$me1.Program=6"
+            "Command":"$activeME.Program=6"
         },
         {
             "Value" : "Down,n",
             "Key":17,
             "Lamp":23,
-            "Command":"$me1.Program=7"
+            "Command":"$activeME.Program=7"
         },
         {
             "Value" : "Down,o",
             "Key":18,
             "Lamp":24,
-            "Command":"$me1.Program=8"
+            "Command":"$activeME.Program=8"
         },
         {
             "Value" : "Down,x",
             "Key":19,
             "Lamp":25,
-            "Command":"$me1.Program=$Global:defailtMP"
+            "Command":"$activeME.Program=$Global:defailtMP"
         },
         {
             "Value" : "Down,y",
             "Key":20,
             "Lamp":26,
-            "Command":"$me1.Program=0"
+            "Command":"$activeME.Program=0"
         },
         {
             "Value" : "Down,E",
             "Key":21,
             "Lamp":15,
-            "Command":"$me1.Cut()"
+            "Command":"$activeME.Cut()"
         },
         {
             "Value" : "Down,F",
             "Key":22,
             "Lamp":16,
-            "Command":"$me1.AutoTransition()"
+            "Command":"$activeME.AutoTransition()"
         },
         {
             "Value" : "Down,Q",
             "Key":22,
             "Lamp":16,
-            "Command":"$me1.TransitionStyle='Mix'"
+            "Command":"$activeME.TransitionStyle='Mix'"
         },
         {
             "Value" : "Hold,Q",
             "Key":22,
             "Lamp":16,
-            "Command":"$me1.TransitionStyle='Dip'"
+            "Command":"$activeME.TransitionStyle='Dip'"
         },
         {
             "Value" : "Down,R",
             "Key":22,
             "Lamp":16,
-            "Command":"$me1.TransitionStyle='Wipe'"
+            "Command":"$activeME.TransitionStyle='Wipe'"
         },
         {
             "Value" : "Hold,R",
             "Key":22,
             "Lamp":16,
-            "Command":"$me1.TransitionStyle='DVE'"
+            "Command":"$activeME.TransitionStyle='DVE'"
         },
         {
             "Value" : "Down,9",
@@ -244,7 +244,7 @@
             "Value" : "Down,U",
             "Key":54,
             "Lamp":40,
-            "Command":"if($activeme.FadeToBlackFullyBlack){$session.SendStringData('1,40')}else{$session.SendStringData('2,40')};$activeme.fadetoblack()"
+            "Command":"if($activeME.FadeToBlackFullyBlack){$session.SendStringData('1,40')}else{$session.SendStringData('2,40')};$activeME.fadetoblack()"
         },
         {
             "Value" : "Down,3",
@@ -274,67 +274,67 @@
             "Value" : "Down,6",
             "Key":32,
             "Lamp":32,
-            "Command":"$Global:activeUSK.Type='DVE'"
+            "Command":"if($global:activeme.TransitionStyle -ne 'DVE'){$Global:activeUSK.Type='DVE'}"
         },
         {
             "Value" : "Down,*",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,70');PatternControl 1"
+            "Command":"PatternControl 1"
         },
         {
             "Value" : "Down,(",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,69');PatternControl 2"
+            "Command":"PatternControl 2"
         },
         {
             "Value" : "Down,^",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,65');PatternControl 3"
+            "Command":"PatternControl 3"
         },
         {
             "Value" : "Down,%",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,79');PatternControl 4"
+            "Command":"PatternControl 4"
         },
         {
             "Value" : "Down,$",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('75');PatternControl 5"
+            "Command":"PatternControl 5"
         },
         {
             "Value" : "Down,[",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,68');PatternControl 6"
+            "Command":"PatternControl 6"
         },
         {
             "Value" : "Down,]",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,71');PatternControl 7"
+            "Command":"PatternControl 7"
         },
         {
             "Value" : "Down,/",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,67');PatternControl 8"
+            "Command":"PatternControl 8"
         },
         {
             "Value" : "Down,?",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,78');PatternControl 9"
+            "Command":"PatternControl 9"
         },
         {
             "Value" : "Down,>",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('2,77');PatternControl 10"
+            "Command":"PatternControl 10"
         },
         {
             "Value" : "Hold,&",
@@ -343,11 +343,106 @@
             "Command":"$session.SendStringData('4,66');$Global:PatternCtrlMode='BusKeyMode'"
         },
         {
+            "Value" : "Down,-",
+            "Key":32,
+            "Lamp":32,
+            "Command":"if($activeME.WipeReverse -eq 0){$session.SendStringData('2,64');$activeME.WipeReverse=1}else{$session.SendStringData('1,64');$activeME.WipeReverse=0}"
+        },
+        {
+            "Value" : "Hold,-",
+            "Key":32,
+            "Lamp":32,
+            "Command":"if($activeME.WipeFlipFlop -eq 0){$session.SendStringData('4,64');$activeME.WipeFlipFlop=1}else{$session.SendStringData('3,64');$activeME.WipeFlipFlop=0}"
+        },
+        {
             "Value" : "Hold,+",
             "Key":32,
             "Lamp":76,
             "Command":"ShiftModeToggle"
         }
+    ],
+    "Mapping":[
+        {
+            "Key":1,
+            "Input":1
+        },
+        {
+            "Key":2,
+            "Input":2
+        },
+        {
+            "Key":3,
+            "Input":3
+        },
+        {
+            "Key":4,
+            "Input":4
+        },
+        {
+            "Key":5,
+            "Input":5
+        },
+        {
+            "Key":6,
+            "Input":6
+        },
+        {
+            "Key":7,
+            "Input":7
+        },
+        {
+            "Key":8,
+            "Input":8
+        },
+        {
+            "Key":9,
+            "Input":3010
+        },
+        {
+            "Key":10,
+            "Input":0
+        },
+        {
+            "Key":11,
+            "Input":2001
+        },
+        {
+            "Key":12,
+            "Input":2002
+        },
+        {
+            "Key":13,
+            "Input":1000
+        },
+        {
+            "Key":14,
+            "Input":99
+        },
+        {
+            "Key":15,
+            "Input":99
+        },
+        {
+            "Key":16,
+            "Input":4
+        },
+        {
+            "Key":17,
+            "Input":99
+        },
+        {
+            "Key":18,
+            "Input":99
+        },
+        {
+            "Key":19,
+            "Input":3020
+        },
+        {
+            "Key":20,
+            "Input":99
+        }
+
     ]
 
 }

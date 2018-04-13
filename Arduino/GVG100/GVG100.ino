@@ -68,6 +68,8 @@ byte BCD[16][4] ={{0,0,0,0},
 
 int bussLEDs[] =    {30,28,26,24,9,8,11,10,51,53};
 int previewLEDs[] = {38,36,34,32,1,3,5,7,6,4};
+int programLEDs [] = {33,35,37,39,13,15,14,12,0,2};
+int patternLEDs[] = {70,69,65,79,75,68,71,67,78,77};
 
 Keypad keypad = Keypad( makeKeymap(keys), rowPins, colPins, ROWS, COLS );
 void keypadEvent(KeypadEvent key){
@@ -125,6 +127,25 @@ void stringCallback(char *myString)
   digitalWrite(buttread, HIGH);
   switch(Line1.toInt())
   {
+    case 0:
+    {
+      //set all off
+      initBlinkLEDarray();
+      WriteData();
+      digitalWrite(Data0, LOW);
+      digitalWrite(Data1, LOW);
+      digitalWrite(Data2, LOW);
+      digitalWrite(Data3, LOW);
+      digitalWrite(Data4, LOW);
+      digitalWrite(Data5, LOW);
+      digitalWrite(Data6, LOW);
+      digitalWrite(Data7, LOW);
+      for(int number =0;number<=11; number ++)
+      {
+        DecoderOut(number);
+      }
+      break;
+    }
   case 1:
     {
       //set LED off
@@ -153,19 +174,20 @@ void stringCallback(char *myString)
     }
     case 3:
     {
-      //set blink off
+      //set LED blink off
       BlinkLEDArray[Line2.toInt()]=0;
       LEDArray[Line2.toInt()]=0;
       break;
     }
     case 4:
     {
-      //set blink on
+      //set LED blink on
       BlinkLEDArray[Line2.toInt()]=1;
       break;
     }
     case 5:
     {
+      //set all KeyBus leds to blink (1) or no blink (0)
       if(BlinkStatus == 1){
         //leds are already on so update blinking and set state off
         blinkLEDs();
@@ -178,13 +200,79 @@ void stringCallback(char *myString)
     }
     case 6:
     {
+      //turn off all led and bling state for specified program, preview or keybus
+      //if(BlinkStatus == 1){
+        //leds are already on so update blinking and set state off
+        //blinkLEDs();
+        //BlinkStatus = 0;
+      //}
+      for(int i = 0; i < 10; i++) {
+        if(Line2 == "program"){
+          BlinkLEDArray[programLEDs[i]]=0;
+          LEDArray[programLEDs[i]]=0;
+          WriteData();
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(0)+i]);
+          }
+          DecoderOut(0);
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(8)+i]);
+          }
+          DecoderOut(1);
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          }
+          DecoderOut(4);
+        }
+        if(Line2 == "preview"){
+          BlinkLEDArray[previewLEDs[i]]=0;
+          LEDArray[previewLEDs[i]]=0;
+          WriteData();
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(0)+i]);
+          }
+          DecoderOut(0);
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          }
+          DecoderOut(4);
+        }
+        if(Line2 == "keybus"){
+          BlinkLEDArray[bussLEDs[i]]=0;
+          LEDArray[bussLEDs[i]]=0;
+          WriteData();
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(1)+i]);
+          }
+          DecoderOut(1);
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          }
+          DecoderOut(4);
+          for(int i = 0; i < 8; i++) {
+            digitalWrite(rowPins[i] ,LEDArray[(48)+i]);
+          }
+          DecoderOut(6);
+        }
+        
+      }
+      break;
+    }
+    case 7:
+    {
+      //Set Pattern Control leds
+      //0 = all off, 1= all blink
       if(BlinkStatus == 1){
         //leds are already on so update blinking and set state off
         blinkLEDs();
         BlinkStatus = 0;
       }
       for(int i = 0; i < 10; i++) {
-        BlinkLEDArray[previewLEDs[i]]=Line2.toInt();
+        BlinkLEDArray[patternLEDs[i]]=Line2.toInt();
+        if(Line2.toInt()==0){
+          //if turning off blink, also turning off leds alltogether
+          LEDArray[patternLEDs[i]]=0;
+        }
       }
       break;
     }

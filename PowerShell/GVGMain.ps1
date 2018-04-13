@@ -2,6 +2,8 @@
 ### version:0.2 - still experimenting with functionality
 ### By: Ian Morrish
 ###
+### v0.3 Added button LED mapping to ATEM input ID using JSON config file (requires update to Arduino sketch for LED fast clear of program or preview
+###
 ### v0.2 enabled Key Bus to be used for Aux1-6, MP1-2 and USK/DSK fill source by holding "Positioner" button for 2 seconds (until led flashes) and then sellecting pattern
 ###      hold down "Editor Enable" to enable shift for key bus 2nd option (top row is Media slot or macro number, bottom row is alternative inputs for Aux and keyers)
 ### v0.1 Program/preview, Mix/dip & Wipe/DVE (hold for 2 seconds for dip or dve), FTB and T-Bar working
@@ -68,7 +70,9 @@ function CreateATEMObjects()
 {
     $me=$atem.GetMEs()
     $Global:me1=$me[0]
-    $Global:activeME = $me1
+    $Global:me2=$me[1]
+    $Global:activeME = $me2
+    #$Global:activeME = $
 
     $MediaPlayers = $atem.GetMediaPlayers()
     $Global:MP1=$MediaPlayers[0]
@@ -88,18 +92,25 @@ $Global:KeyBusMode="Aux1"
 $Global:ShiftMode=$false
 $Global:EditorMode=$false
 $Global:TransitionType = $Global:activeME.TransitionStyle
+$Global:TransitionSelection = $activeme.TransitionSelection
 $Global:USKTransitionType = $Global:activeUSK.Type
+$Global:Aux1Source = $aux1.Source
 #T-Bar
 $Global:TbarLastFramPosition = 0
 $Global:TransitionDirection = "normal"
-$Global:PatternCtrlMode="BusKeyMode"
+$Global:PatternCtrlMode="WipePattern"
 
 function LoadXkeys(){
     $gvgFile = ConvertFrom-Json (get-content "OneDrive\PowerShell\GVG100\gvgkeys.json" -raw)
     $Global:atemCommands = New-Object System.Collections.Hashtable
-    #$xkFile | get-member -MemberType NoteProperty | ForEach-Object{ConvertFrom-Json $_.vlaue} | ForEach-Object{$xkCommands.add($_.name,$xkFile."$($_.name)")}
+    $Global:atemInputMapping = New-Object System.Collections.Hashtable
+    # Map buttons to PowerShell commands
     foreach($key in $gvgFile.keys){
         $atemCommands.add($key.Value,$key.Command)
+    }
+    # map button LED's to ATEM Inputs
+    foreach($key in $gvgFile.Mapping){
+        $atemInputMapping.add($key.Key,$key.Input)
     }
 }
 LoadXKeys
@@ -116,7 +127,7 @@ function Handlekey($keyId){
     elseif($analogPot[0] -eq "Pot2"){
         $b = $analogPot[1]-as [int]
         Write-host $b
-      tbar $b
+        tbar $b
     }
     else{
         write-host $keyId
@@ -135,13 +146,90 @@ $Global:Program = $activeME.Program
 $Global:Preview = $activeME.Preview
 if($Global:Program -gt 0 -And $Global:Program -lt 9){
     #turn on new program led
-    $session.SendStringData("2,$($programLEDs[$Global:Program]-1)")
+    $session.SendStringData("2,$($programLEDs[$Global:Program-1])")
 }
 if($Global:Preview -gt 0 -And $Global:Preview -lt 9){
       #turn on new Preview led
-      $session.SendStringData("2,$($previewLEDs[$Global:Preview]-1)")
+      $session.SendStringData("2,$($previewLEDs[$Global:Preview-1])")
 }
 
+function monitor(){
+    #Program bus
+    [Int32]$CurrentProgram = $Global:activeME.Program # | get-member
+    if($Global:Program -ne $CurrentProgram){
+        #clear program leds
+        $session.SendStringData("6,program")
+        if($atemInputMapping.ContainsValue($CurrentProgram)){
+            $keys=$atemInputMapping.GetEnumerator() | ?{ $_.Value -eq $CurrentProgram }
+            $key=$keys[0].Key
+            if($key -lt 11){
+                $session.SendStringData("2,$($programLEDs[$key-1])")
+            }
+            else{
+                $session.SendStringData("4,$($programLEDs[$key-11])")
+            }
+        }
+
+        $Global:Program = $CurrentProgram
+    }
+
+    #Preview bus
+    [Int32]$CurrentPreview = $Global:activeME.Preview
+    if($Global:Preview -ne $CurrentPreview){
+        #clear program leds
+        $session.SendStringData("6,preview")
+        if($atemInputMapping.ContainsValue($CurrentPreview)){
+            $keys=$atemInputMapping.GetEnumerator() | ?{ $_.Value -eq $CurrentPreview }
+            $key=$keys[0].Key # Value
+            if($key -lt 11){
+                $session.SendStringData("2,$($previewLEDs[$key-1])")
+            }
+            else{
+                $session.SendStringData("4,$($previewLEDs[$key-11])")
+            }
+        }
+
+        $Global:Preview = $CurrentPreview
+    }
+
+    #Transition Mode LED's
+    if($Global:TransitionType -ne $Global:activeME.TransitionStyle){
+        switch($Global:TransitionType){
+            Mix{$session.SendStringData("1,54")}
+            Dip{$session.SendStringData("3,54")}
+            Wipe{$session.SendStringData("1,52")}
+            DVE{$session.SendStringData("3,52")}
+            
+        }
+        switch($Global:activeME.TransitionStyle){
+            Mix{$session.SendStringData("2,54")}
+            Dip{$session.SendStringData("4,54")}
+            Wipe{$session.SendStringData("2,52")}
+            DVE{$session.SendStringData("4,52")}
+        }
+
+        $Global:TransitionType = $Global:activeME.TransitionStyle
+    }
+
+    #USK Mode LED's
+    if($Global:USKTransitionType -ne $Global:activeUSK.Type){
+        switch($Global:USKTransitionType){
+            Luma{$session.SendStringData("1,21")}
+            Chroma{$session.SendStringData("1,23")}
+            Pattern{$session.SendStringData("1,18")}
+            DVE{$session.SendStringData("1,22")}
+            
+        }
+        switch($Global:activeUSK.Type){
+            Luma{$session.SendStringData("2,21")}
+            Chroma{$session.SendStringData("2,23")}
+            Pattern{$session.SendStringData("2,18")}
+            DVE{$session.SendStringData("2,22")}
+        }
+
+        $Global:USKTransitionType = $Global:activeUSK.Type
+    }
+}
 
 $timer = New-Object System.Timers.Timer
 $timer.Interval = 100
@@ -231,11 +319,20 @@ $timerAction = {
 
         $Global:USKTransitionType = $Global:activeUSK.Type
     }
+    #key bus LEDS
+    switch($Global:KeyBusMode){
+    Aux1{
+        if($Global:Aux1Source -ne $aux1.Source){
+
+        }
+
+    }
 
  }
+}
 Unregister-Event $sourceIdentifier -ErrorAction SilentlyContinue
 $timer.stop()
-$start = Register-ObjectEvent -InputObject $timer -SourceIdentifier $sourceIdentifier -EventName Elapsed -Action $timeraction
+$start = Register-ObjectEvent -InputObject $timer -SourceIdentifier $sourceIdentifier -EventName Elapsed -Action {monitor} #$timeraction
 $timer.start()
 
 function normalize($value, $min, $max) {
@@ -274,14 +371,20 @@ $PatternMode = $("Aux1","Aux2","Aux3","MP1","MP2","Macro","DSK1","DSK2","USK1","
 $PatternLEDs = $(70,69,65,79,75,68,71,67,78,77)
 function PatternControl($patternNumber){
     #clear current leds
-    for($i=0; $i -lt 10; $i++){
-        $session.SendStringData("1,$($PatternLEDs[$i])")
-        start-sleep -Milliseconds 3
-    }
+        $session.SendStringData("7,0")
+
     switch($Global:PatternCtrlMode){
-        USKPattern{$Global:activeUSK.Pattern = $PatternName[$patternNumber]-1;$session.SendStringData('3,18')}
-        WipePattern{$Global:activeME.TransitionWipePattern = $PatternName[$patternNumber]-1}
-        BusKeyMode{$Global:KeyBusMode= $PatternMode[$patternNumber-1]}
+        USKPattern{
+                    $Global:activeUSK.Pattern = $PatternName[$patternNumber-1]
+                    $session.SendStringData('3,18')
+                    }
+        WipePattern{
+                    $Global:activeME.TransitionWipePattern = $PatternName[$patternNumber-1]
+                    }
+        BusKeyMode{
+                    $Global:KeyBusMode= $PatternMode[$patternNumber-1]
+                    $session.SendStringData("4,$($PatternLEDs[$patternNumber-1])")
+                    }
 
     }
 }
@@ -292,7 +395,7 @@ function buskey($key){
     "Aux1"{if($Key -eq 9){$key=10010};if($Key -eq 10){$key=10011};$Aux1.Source = $key;write-host "Aux set to $($Key)"}
     "MP1"{$MP1.MediaStill = $Key-1}
     "MP2"{$MP2.MediaStill = $Key-1}
-    "Macro"{$atem.RunMacro($Key)}
+    "Macro"{$Global:MacroToRun = $atem.RunMacro($Key)}
     "DSK1Src"{}
     "DSK2Src"{}
     "USK1Src"{$activeUSK.InputFill = $Key}
@@ -310,9 +413,19 @@ function ShiftModeToggle(){
         $Global:ShiftMode = $true
     }
 }
-#<
-$session.SendStringData("1,0")
-$session.SendStringData("1,2")
+function USKAutoTransition(){
+        $Global:activeME.TransitionSelection=2
+        Start-Sleep -Milliseconds 1
+        $me1.AutoTransition()
+        Start-Sleep -Milliseconds 10 #give it a chance to start
+        Start-Sleep 2
+        #Key is now onair so remove from next transition (Turn on BKGD)
+        $Global:activeME.TransitionSelection=1 
+}
+<#
+$session.SendStringData("2,38")
+$session.SendStringData("4,36")
+$session.SendStringData("6,preview")
 #blink single LED
 $session.SendStringData("4,77")
 
