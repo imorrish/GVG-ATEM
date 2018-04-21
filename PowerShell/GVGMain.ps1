@@ -2,6 +2,8 @@
 ### version:0.2 - still experimenting with functionality
 ### By: Ian Morrish
 ###
+### v0.4 Added LED status for Key Bus showing Aux or MediaPlayer slot. Introduced bug in Program/Preview LED updates sometimes not working.
+###
 ### v0.3 Added button LED mapping to ATEM input ID using JSON config file (requires update to Arduino sketch for LED fast clear of program or preview
 ###
 ### v0.2 enabled Key Bus to be used for Aux1-6, MP1-2 and USK/DSK fill source by holding "Positioner" button for 2 seconds (until led flashes) and then sellecting pattern
@@ -34,7 +36,7 @@ write-host "Arduino found on $($PortName)"
 add-type -path '.\Documents\WindowsPowerShell\Solid.Arduino.dll'
 $connection = New-Object Solid.Arduino.SerialConnection($PortName,[Solid.Arduino.SerialBaudRate]::Bps_57600)
 $session = New-Object Solid.Arduino.ArduinoSession($connection, 2000)
-Start-Sleep -Seconds 5
+Start-Sleep -Seconds 6
 $session.GetFirmware()
 #endregion
 
@@ -71,7 +73,7 @@ function CreateATEMObjects()
     $me=$atem.GetMEs()
     $Global:me1=$me[0]
     $Global:me2=$me[1]
-    $Global:activeME = $me2
+    $Global:activeME = $me1
     #$Global:activeME = $
 
     $MediaPlayers = $atem.GetMediaPlayers()
@@ -94,7 +96,11 @@ $Global:EditorMode=$false
 $Global:TransitionType = $Global:activeME.TransitionStyle
 $Global:TransitionSelection = $activeme.TransitionSelection
 $Global:USKTransitionType = $Global:activeUSK.Type
+$Global:NextTransition = $Global:activeME.TransitionSelection
+$Global:PreviewTransitionStatus = $ActiveME.PreviewTransition
 $Global:Aux1Source = $aux1.Source
+$Global:MP1Source = $MP1.MediaStill
+$Global:MP2Source = $MP2.MediaStill
 #T-Bar
 $Global:TbarLastFramPosition = 0
 $Global:TransitionDirection = "normal"
@@ -126,7 +132,7 @@ function Handlekey($keyId){
     }
     elseif($analogPot[0] -eq "Pot2"){
         $b = $analogPot[1]-as [int]
-        Write-host $b
+        #Write-host $b
         tbar $b
     }
     else{
@@ -152,6 +158,10 @@ if($Global:Preview -gt 0 -And $Global:Preview -lt 9){
       #turn on new Preview led
       $session.SendStringData("2,$($previewLEDs[$Global:Preview-1])")
 }
+#set next transition to bkgd
+$session.SendStringData("2,49")
+#Show ME1 LED
+$session.SendStringData("2,63")
 
 function monitor(){
     #Program bus
@@ -229,107 +239,81 @@ function monitor(){
 
         $Global:USKTransitionType = $Global:activeUSK.Type
     }
+    
+    #Next Transition LED status
+    if($Global:NextTransition -ne $Global:activeME.TransitionSelection){
+        switch($Global:activeME.TransitionSelection){
+        1{$session.SendStringData("2,49");$session.SendStringData("1,48");break}
+        2{$session.SendStringData("1,49");$session.SendStringData("2,48");break}
+        3{$session.SendStringData("2,49");$session.SendStringData("2,48");break}
+        }
+    $Global:NextTransition = $Global:activeME.TransitionSelection
+    }
+
+    #Preview Transition status
+    if($Global:PreviewTransitionStatus -ne $ActiveME.PreviewTransition){
+        if($ActiveME.PreviewTransition){$session.SendStringData("2,45")}
+        else{$session.SendStringData("1,45")}
+     $Global:PreviewTransitionStatus = $ActiveME.PreviewTransition
+     }
+     #KeyBus LED's
+     switch($Global:KeyBusMode){
+     Aux1{
+        if($Global:Aux1Source -ne $aux1.Source){
+            #clear Bus LED's
+            $session.SendStringData("6,keybus")
+            if($atemInputMapping.ContainsValue([Int32]$aux1.Source)){
+                $keys=$atemInputMapping.GetEnumerator() | ?{ $_.Value -eq $aux1.Source }
+                $key=$keys[0].Key
+                if($key -lt 11){
+                    $session.SendStringData("2,$($bussLEDs[$key-1])")
+                }
+                else{
+                $session.SendStringData("4,$($bussLEDs[$key-11])")
+                }
+            }
+
+            $Global:Aux1Source = $aux1.Source
+        }
+            
+     }
+     MP1{
+        if($Global:MP1Source -ne $MP1.MediaStill){
+            #clear Bus LED's
+            $session.SendStringData("6,keybus")
+            if($MP1.MediaStill -lt 11){
+                $session.SendStringData("2,$($bussLEDs[$MP1.MediaStill])")
+            }
+            else{
+                $session.SendStringData("4,$($bussLEDs[$MP1.MediaStill-10])")
+            }
+
+            $Global:MP1Source = $MP1.MediaStill
+        }
+    }
+         MP2{
+        if($Global:MP2Source -ne $MP2.MediaStill){
+            #clear Bus LED's
+            $session.SendStringData("6,keybus")
+            if($MP1.MediaStill -lt 11){
+                $session.SendStringData("2,$($bussLEDs[$MP2.MediaStill])")
+            }
+            else{
+                $session.SendStringData("4,$($bussLEDs[$MP2.MediaStill-10])")
+            }
+
+            $Global:MP1Source = $MP1.MediaStill
+        }
+    }
+
+    }
+   
 }
 
 $timer = New-Object System.Timers.Timer
 $timer.Interval = 100
 $timer.AutoReset = $true
 $sourceIdentifier = "TimerJob"
-$timerAction = { 
-    #Write-Host "looping"
-    #update leds
-    #Program
-    $CurrentProgram = $Global:activeME.Program
-    if($Global:Program -ne $CurrentProgram){
-    #reset Time Since Last Cut
-    #$Clockhash.LastCut = get-date -f "hh:mm:ss"
-        if($Global:Debug -eq $true){write-host "Program changed from $($Global:Program) to $($CurrentProgram) "}
-        
-        if($Global:Program -gt 0 -And $Global:Program -lt 9){
-            #turn off current LED
-            $session.SendStringData("1,$($programLEDs[$Global:Program-1])")
-            if($CurrentProgram -gt 0 -And $CurrentProgram -lt 9){
-                #turn on new program led
-                $session.SendStringData("2,$($programLEDs[$CurrentProgram-1])")
-            }
-        }
-        $Global:Program = $CurrentProgram
-    }
-    else{
-            #no program led was on
-            if($CurrentProgram -gt 0 -And $CurrentProgram -lt 9){
-                #turn on new program led
-                $session.SendStringData("2,$($programLEDs[$CurrentProgram-1])")
-                $Global:Program = $CurrentProgram
-            }
-    }
-    #Preview
-    $CurrentPreview = $Global:activeME.Preview
-    if($Global:Preview -ne $CurrentPreview){
-        if($Global:Debug -eq $true){write-host "Preview changed from $($Global:Preview) to $($CurrentPreview) "}
-        if($Global:Preview -gt 0 -And $Global:Preview -lt 9){
-            #turn off current LED
-            $session.SendStringData("1,$($previewLEDs[$Global:Preview-1])")
-            if($CurrentPreview -gt 0 -And $CurrentPreview -lt 9){
-                #turn on new Preview led
-                $session.SendStringData("2,$($previewLEDs[$CurrentPreview-1])")
-            }
-        }
-        $Global:Preview = $CurrentPreview
-    }
-    else{
-            #no program led was on
-            if($CurrentPreview -gt 0 -And $CurrentPreview -lt 9){
-                #turn on new preview led
-                $session.SendStringData("2,$($previewLEDs[$Global:Preview-1])")
-                $Global:Preview = $CurrentPreview
-            }
-    }
-    if($Global:TransitionType -ne $Global:activeME.TransitionStyle){
-        switch($Global:TransitionType){
-            Mix{$session.SendStringData("1,54")}
-            Dip{$session.SendStringData("3,54")}
-            Wipe{$session.SendStringData("1,52")}
-            DVE{$session.SendStringData("3,52")}
-            
-        }
-        switch($Global:activeME.TransitionStyle){
-            Mix{$session.SendStringData("2,54")}
-            Dip{$session.SendStringData("4,54")}
-            Wipe{$session.SendStringData("2,52")}
-            DVE{$session.SendStringData("4,52")}
-        }
-
-        $Global:TransitionType = $Global:activeME.TransitionStyle
-    }
-    if($Global:USKTransitionType -ne $Global:activeUSK.Type){
-        switch($Global:USKTransitionType){
-            Luma{$session.SendStringData("1,21")}
-            Chroma{$session.SendStringData("1,23")}
-            Pattern{$session.SendStringData("1,18")}
-            DVE{$session.SendStringData("1,22")}
-            
-        }
-        switch($Global:activeUSK.Type){
-            Luma{$session.SendStringData("2,21")}
-            Chroma{$session.SendStringData("2,23")}
-            Pattern{$session.SendStringData("2,18")}
-            DVE{$session.SendStringData("2,22")}
-        }
-
-        $Global:USKTransitionType = $Global:activeUSK.Type
-    }
-    #key bus LEDS
-    switch($Global:KeyBusMode){
-    Aux1{
-        if($Global:Aux1Source -ne $aux1.Source){
-
-        }
-
-    }
-
- }
-}
 Unregister-Event $sourceIdentifier -ErrorAction SilentlyContinue
 $timer.stop()
 $start = Register-ObjectEvent -InputObject $timer -SourceIdentifier $sourceIdentifier -EventName Elapsed -Action {monitor} #$timeraction
@@ -377,14 +361,16 @@ function PatternControl($patternNumber){
         USKPattern{
                     $Global:activeUSK.Pattern = $PatternName[$patternNumber-1]
                     $session.SendStringData('3,18')
-                    }
+        }
         WipePattern{
                     $Global:activeME.TransitionWipePattern = $PatternName[$patternNumber-1]
-                    }
+        }
         BusKeyMode{
                     $Global:KeyBusMode= $PatternMode[$patternNumber-1]
                     $session.SendStringData("4,$($PatternLEDs[$patternNumber-1])")
-                    }
+                    #clear Bus LED's
+                    $session.SendStringData("6,keybus")
+        }
 
     }
 }
@@ -413,6 +399,34 @@ function ShiftModeToggle(){
         $Global:ShiftMode = $true
     }
 }
+function ToggleNextTransition($item){
+    #Next Transition is a bit mask for Background, USK1, USK2, USK3, USK4 (1,2,4,8 respectivly)
+    switch($item){
+        bkgd{
+        if($Global:activeME.TransitionSelection -ne 1){# don't toggle bit if it is the only thing enabled
+            $Global:activeME.TransitionSelection = ($Global:activeME.TransitionSelection -bxor 1)
+            }
+        }
+        key{
+        if($Global:activeME.TransitionSelection -ne 2){# don't toggle bit if it is the only thing enabled
+            $Global:activeME.TransitionSelection = ($Global:activeME.TransitionSelection -bxor 2)
+            }
+        }
+    }
+}
+
+function ToggleActiveME(){
+    if($Global:activeME -eq $me1){
+        $Global:activeME = $me2;
+        $session.SendStringData("4,63")
+    }
+    else {
+        $Global:activeME = $me1;
+        $session.SendStringData("3,63")
+
+    }
+}
+
 function USKAutoTransition(){
         $Global:activeME.TransitionSelection=2
         Start-Sleep -Milliseconds 1
@@ -423,7 +437,7 @@ function USKAutoTransition(){
         $Global:activeME.TransitionSelection=1 
 }
 <#
-$session.SendStringData("2,38")
+$session.SendStringData("2,1")
 $session.SendStringData("4,36")
 $session.SendStringData("6,preview")
 #blink single LED
@@ -436,6 +450,9 @@ $session.SendStringData("5,0")
 
 #stop blinking single LED
 $session.SendStringData("3,77")
+
+#turn off pattern LED's
+$session.SendStringData("7,0")
 
 #read analog values that have changed
 $session.SendStringData("9,1")
@@ -473,7 +490,7 @@ $session.SendStringData("1,$($i)")
 } 
 }
 
-function exit(){
+function Codeexit(){
     Unregister-Event -SourceIdentifier eventMessage -ErrorAction SilentlyContinue #incase we are re-running the script
     Unregister-Event $sourceIdentifier -ErrorAction SilentlyContinue
     $timer.stop()

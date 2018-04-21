@@ -85,6 +85,12 @@
             "Command":"$activeME.Preview=0"
         },
         {
+            "Value" : "Hold,D",
+            "Key":10,
+            "Lamp":10,
+            "Command":"$activeME.Preview=1000"
+        },
+        {
             "Value" : "Down,h",
             "Key":11,
             "Lamp":17,
@@ -241,10 +247,34 @@
             "Command":"buskey 10"
         },
         {
+            "Value" : "Down,O",
+            "Key":32,
+            "Lamp":32,
+            "Command":"ToggleNextTransition 'bkgd'"
+        },
+        {
+            "Value" : "Down,P",
+            "Key":32,
+            "Lamp":32,
+            "Command":"ToggleNextTransition 'key'"
+        },
+        {
             "Value" : "Down,U",
             "Key":54,
             "Lamp":40,
             "Command":"if($activeME.FadeToBlackFullyBlack){$session.SendStringData('1,40')}else{$session.SendStringData('2,40')};$activeME.fadetoblack()"
+        },
+        {
+            "Value" : "Down,V",
+            "Key":32,
+            "Lamp":32,
+            "Command":"if($ActiveME.PreviewTransition){$ActiveME.PreviewTransition=$false}else{$ActiveME.PreviewTransition=$true}"
+        },
+        {
+            "Value" : "Down,K",
+            "Key":32,
+            "Lamp":32,
+            "Command":"ToggleActiveME"
         },
         {
             "Value" : "Down,3",
@@ -275,6 +305,12 @@
             "Key":32,
             "Lamp":32,
             "Command":"if($global:activeme.TransitionStyle -ne 'DVE'){$Global:activeUSK.Type='DVE'}"
+        },
+        {
+            "Value" : "Down,8",
+            "Key":32,
+            "Lamp":32,
+            "Command":"PatternControl 1"
         },
         {
             "Value" : "Down,*",
@@ -340,7 +376,7 @@
             "Value" : "Hold,&",
             "Key":32,
             "Lamp":32,
-            "Command":"$session.SendStringData('4,66');$Global:PatternCtrlMode='BusKeyMode'"
+            "Command":"if($Global:PatternCtrlMode -ne 'BusKeyMode'){$session.SendStringData('4,66');$Global:PatternCtrlMode='BusKeyMode'}else{$session.SendStringData('3,66');$Global:PatternCtrlMode='WipePattern'}"
         },
         {
             "Value" : "Down,-",
@@ -424,7 +460,7 @@
         },
         {
             "Key":16,
-            "Input":4
+            "Input":99
         },
         {
             "Key":17,
@@ -432,7 +468,7 @@
         },
         {
             "Key":18,
-            "Input":99
+            "Input":10020
         },
         {
             "Key":19,

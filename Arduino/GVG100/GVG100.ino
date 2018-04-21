@@ -211,16 +211,16 @@ void stringCallback(char *myString)
           BlinkLEDArray[programLEDs[i]]=0;
           LEDArray[programLEDs[i]]=0;
           WriteData();
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(0)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(0)+j]);
           }
           DecoderOut(0);
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(8)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(8)+j]);
           }
           DecoderOut(1);
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(32)+j]);
           }
           DecoderOut(4);
         }
@@ -228,12 +228,12 @@ void stringCallback(char *myString)
           BlinkLEDArray[previewLEDs[i]]=0;
           LEDArray[previewLEDs[i]]=0;
           WriteData();
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(0)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(0)+j]);
           }
           DecoderOut(0);
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(32)+j]);
           }
           DecoderOut(4);
         }
@@ -241,20 +241,32 @@ void stringCallback(char *myString)
           BlinkLEDArray[bussLEDs[i]]=0;
           LEDArray[bussLEDs[i]]=0;
           WriteData();
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(1)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(8)+j]);
           }
           DecoderOut(1);
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(32)+i]);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(24)+j]);
           }
-          DecoderOut(4);
-          for(int i = 0; i < 8; i++) {
-            digitalWrite(rowPins[i] ,LEDArray[(48)+i]);
+          DecoderOut(3);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(48)+j]);
           }
           DecoderOut(6);
         }
-        
+        if(Line2 == "patterns"){
+          BlinkLEDArray[patternLEDs[i]]=0;
+          LEDArray[patternLEDs[i]]=0;
+          WriteData();
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(64)+j]);
+          }
+          DecoderOut(8);
+          for(int j = 0; j < 8; j++) {
+            digitalWrite(rowPins[j] ,LEDArray[(72)+j]);
+          }
+          DecoderOut(9);
+        }
       }
       break;
     }
