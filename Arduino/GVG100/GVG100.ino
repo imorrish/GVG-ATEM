@@ -272,20 +272,35 @@ void stringCallback(char *myString)
     }
     case 7:
     {
-      //Set Pattern Control leds
-      //0 = all off, 1= all blink
-      if(BlinkStatus == 1){
-        //leds are already on so update blinking and set state off
-        blinkLEDs();
-        BlinkStatus = 0;
-      }
-      for(int i = 0; i < 10; i++) {
-        BlinkLEDArray[patternLEDs[i]]=Line2.toInt();
-        if(Line2.toInt()==0){
-          //if turning off blink, also turning off leds alltogether
-          LEDArray[patternLEDs[i]]=0;
+      //Set 7 segment display with raw number
+      for (byte i=0; i<8; i++){
+          byte state = bitRead(Line2.toInt(), i);
+          digitalWrite(rowPins[i], state);
         }
-      }
+        digitalWrite(Display, LOW);
+        delay(2);
+        digitalWrite(Display, HIGH);
+        delay(2);
+      break;
+    }
+    case 8:
+    {
+      // set 7 segment display
+      WriteData();
+      int thisNumber = 0;
+      for (int digit=0; digit<4; digit++){
+        char thisDigit = Line2.charAt(digit);
+        if(thisDigit == ' '){thisNumber=120+digit;}
+        else{thisNumber = ((int)thisDigit-48)*8+digit;}
+        for (byte i=0; i<8; i++){
+          byte state = bitRead(thisNumber, i);
+          digitalWrite(rowPins[i], state);
+        }
+        digitalWrite(Display, LOW);
+        delay(2);
+        digitalWrite(Display, HIGH);
+        delay(2);
+       }
       break;
     }
     case 9:
