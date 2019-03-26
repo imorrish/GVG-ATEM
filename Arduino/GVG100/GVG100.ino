@@ -479,8 +479,9 @@ void loop() {
     while(Firmata.available()) {
     Firmata.processInput();
   }
-  readAnalogValues();
-  delay(50);
+  //readAnalogValues();
+  readTbar();
+  //delay(50);
   keypad.getKeys();
   //serial.update();
   //delay(10);
@@ -515,7 +516,8 @@ void WriteData(){
   pinMode(Data5, OUTPUT);
   pinMode(Data6, OUTPUT);
   pinMode(Data7, OUTPUT);
-  }
+}
+
 void DecoderOut(byte number)
 {
   for(int i =0;i<4; i ++)
@@ -573,6 +575,25 @@ void blinkLEDs()
     }
   }
 }
+void readTbar()
+{
+   unsigned int x;
+   unsigned int samples = 500;
+   unsigned long int accumulator = 0; // initialize accumulator
+   for (x = 0; x < samples; x++) {
+       accumulator += analogRead(A0);
+   }
+   int currentPotValue = accumulator / samples;
+   //int currentPotValue = analogRead(A0);
+   int diff = abs(currentPotValue - AnalogPreviousValues[2]);
+   if(diff >0 && currentPotValue > 129 && currentPotValue < 971) {
+       AnalogPreviousValues[2]=currentPotValue;
+       String action = "Pot2";
+       String echoMsg = action+','+currentPotValue;
+       Firmata.sendString(echoMsg.c_str()); 
+   }   
+}
+
 void readAnalogValues()
 {
   int AnalogCurrentValues [14];
